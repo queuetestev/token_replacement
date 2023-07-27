@@ -1,0 +1,15 @@
+{
+  "name": "token_replacement",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "token_replacement.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/glob": "^0.4.0"
+  }
+}
