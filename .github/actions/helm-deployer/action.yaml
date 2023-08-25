@@ -32,9 +32,12 @@ runs:
         script: |
 
           const fs = require('fs')
+          const path = require('path')
 
-          //Read file
+          //Read file and get basename
           const file = fs.readFileSync(process.env.file_path, 'utf8');
+
+          const basename = path.baseName(process.env.file_path)
 
           //Convert file to base64
           const bFile = btoa(file)
@@ -57,6 +60,13 @@ runs:
           console.log(main_branch.data.object.sha)
 
           //Obtain file's blob sha in the branch
+          const current_file = await github.rest.repos.getContent({
+            owner: context.repo.owner,
+            repo: proces.env.repository,
+            path: `clusters/${process.env.cluster}/${process.env.namespace}/${basename}`,
+          });
+
+          console.log(current_file)
 
           //Modify file in this new branch
 
