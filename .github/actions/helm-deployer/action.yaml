@@ -26,4 +26,5 @@ runs:
           const fs = require('fs')
           
           const file = fs.readFileSync(process.env.file_path, 'utf8');
-          console.log(file)
+          const bFile = btoa(file)
+          console.log(bFile)
