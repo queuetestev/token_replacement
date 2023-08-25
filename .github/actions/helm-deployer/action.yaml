@@ -53,7 +53,7 @@ runs:
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
-              ref: 'refs/heads/hola9',
+              ref: 'refs/heads/hola10',
               sha: main_branch.data.object.sha,
           })
           console.log(main_branch)
@@ -87,4 +87,5 @@ runs:
             repo: process.env.repository,
             head: new_branch.data.ref,
             base: 'main',
+            title: ''
           });
