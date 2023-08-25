@@ -53,7 +53,7 @@ runs:
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
-              ref: 'refs/heads/hola1',
+              ref: 'refs/heads/hola2',
               sha: main_branch.data.object.sha,
           })
           console.log(main_branch)
@@ -62,7 +62,7 @@ runs:
           //Obtain file's blob sha in the branch
           const current_file = await github.rest.repos.getContent({
             owner: context.repo.owner,
-            repo: proces.env.repository,
+            repo: process.env.repository,
             path: `clusters/${process.env.cluster}/${process.env.namespace}/${basename}`,
           });
 
