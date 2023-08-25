@@ -23,6 +23,8 @@ runs:
         retries: 3
         retry-exempt-status-codes: 400,401,403
         script: |
+
+          const fs = require('fs')
           
           const file = fs.readFileSync(process.env.file_path, utf8);
           console.log(file)
