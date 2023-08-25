@@ -18,13 +18,38 @@ runs:
     - uses: actions/github-script@v6
       env:
         file_path: ${{ inputs.file }}
+        repository: ${{ inputs.repository }}
+        cluster: ${{ inputs.cluster }}
+        namespace: ${{ inputs.namespace }}
       with:
         result-encoding: string
         retries: 3
         script: |
 
           const fs = require('fs')
-          
+
+          //Read file
           const file = fs.readFileSync(process.env.file_path, 'utf8');
+
+          //Convert file to base64
           const bFile = btoa(file)
-          console.log(bFile)
+
+          //Get main branch sha
+          const main_branch = await github.rest.git.getRef({
+              owner: context.repo.owner ,
+              repo: process.env.repository,
+              ref: 'heads/main',
+          })
+
+          //Create branch in flux repo
+          console.log(main_branch)
+          console.log(main_branch.response.object.sha)
+
+          //Obtain file's blob sha in the branch
+
+          //Modify file in this new branch
+
+
+          //Open pull request
+
+          await github.rest.
