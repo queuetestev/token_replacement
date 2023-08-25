@@ -21,7 +21,6 @@ runs:
       with:
         result-encoding: string
         retries: 3
-        retry-exempt-status-codes: 400,401,403
         script: |
 
           const fs = require('fs')
