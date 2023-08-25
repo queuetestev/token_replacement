@@ -1,0 +1,24 @@
+name: Helm Deployer
+description: Opens pull request against a given flux managed clusters repo modifying the specified clusters
+inputs:
+  repository:
+    description: Flux repository to open PR against
+    required: true
+  cluster:
+    description: Cluster to modify HelmRelease in
+    required: true
+  namespace:
+    description: Namespace to modify HelmRelease in
+    required: true
+  file:
+    description: File path in filesystem of HelmReleaseCRD (filename must match with filename in flux repository)
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/github-script@v6
+      with:
+        result-encoding: string
+        retries: 3
+        retry-exempt-status-codes: 400,401,403
+        script: |
+          console.log("Ever")
