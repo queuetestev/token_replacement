@@ -87,5 +87,5 @@ runs:
             repo: process.env.repository,
             head: new_branch.data.ref,
             base: 'main',
-            title: ''
+            title: 'ajaaa'
           });
