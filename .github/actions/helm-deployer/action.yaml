@@ -16,9 +16,13 @@ runs:
   using: "composite"
   steps:
     - uses: actions/github-script@v6
+      env:
+        file_path: ${{ inputs.file }}
       with:
         result-encoding: string
         retries: 3
         retry-exempt-status-codes: 400,401,403
         script: |
-          console.log("Ever")
+          
+          const file = fs.readFileSync(process.env.file_path, utf8);
+          console.log(file)
