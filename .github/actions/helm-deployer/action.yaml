@@ -37,7 +37,7 @@ runs:
           //Read file and get basename
           const file = fs.readFileSync(process.env.file_path, 'utf8');
 
-          const basename = path.baseName(process.env.file_path)
+          const basename = path.basename(process.env.file_path)
 
           //Convert file to base64
           const bFile = btoa(file)
