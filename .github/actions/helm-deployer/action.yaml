@@ -36,7 +36,7 @@ runs:
 
           //Get main branch sha
           const main_branch = await github.rest.git.getRef({
-              owner: context.repo.owner ,
+              owner: context.repo.owner,
               repo: process.env.repository,
               ref: 'heads/main',
           })
@@ -51,5 +51,3 @@ runs:
 
 
           //Open pull request
-
-          await github.rest.
