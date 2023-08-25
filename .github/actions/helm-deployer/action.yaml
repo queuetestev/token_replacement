@@ -43,7 +43,7 @@ runs:
 
           //Create branch in flux repo
           console.log(main_branch)
-          console.log(main_branch.response.object.sha)
+          console.log(main_branch.data.object.sha)
 
           //Obtain file's blob sha in the branch
 
