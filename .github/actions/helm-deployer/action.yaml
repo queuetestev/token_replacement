@@ -53,7 +53,7 @@ runs:
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
-              ref: 'refs/heads/hola7',
+              ref: 'refs/heads/hola8',
               sha: main_branch.data.object.sha,
           })
           console.log(main_branch)
@@ -81,3 +81,10 @@ runs:
           })
 
           //Open pull request
+
+          const pull_request = octokit.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: process.env.repository,
+            head: new_branch.data.ref,
+            base: 'main',
+          });
