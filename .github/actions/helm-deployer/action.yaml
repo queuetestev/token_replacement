@@ -12,6 +12,10 @@ inputs:
     required: true
   file:
     description: File path in filesystem of HelmReleaseCRD (filename must match with filename in flux repository)
+    required: true
+  token:
+    description: Token to access flux repo
+    required: true
 runs:
   using: "composite"
   steps:
@@ -22,6 +26,7 @@ runs:
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
       with:
+        github-token: ${{ inputs.token }}
         result-encoding: string
         retries: 3
         script: |
@@ -42,6 +47,12 @@ runs:
           })
 
           //Create branch in flux repo
+          const new_branch = await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: process.env.repository,
+              ref: 'refs/heads/hola5',
+              sha: main_branch.data.object.sha,
+          })
           console.log(main_branch)
           console.log(main_branch.data.object.sha)
 

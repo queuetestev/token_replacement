@@ -31,3 +31,4 @@ jobs:
           cluster: cluster01
           namespace: namespacedemo
           file: helm-release.yaml
+          token: ${{ secrets.FLUX_REPO_TOKEN }}
