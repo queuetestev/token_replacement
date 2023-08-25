@@ -82,7 +82,7 @@ runs:
 
           //Open pull request
 
-          const pull_request = octokit.rest.pulls.create({
+          const pull_request = github.rest.pulls.create({
             owner: context.repo.owner,
             repo: process.env.repository,
             head: new_branch.data.ref,
