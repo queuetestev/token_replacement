@@ -46,7 +46,7 @@ runs:
             for (const pull of response.data){
               if (pull.merge_commit_sha == context.sha){
                 core.setOutput('branch_name',`${pull.head.ref}-${context.repo.repo}`)
-                core.setOutput('pr_link', pull.html_url)
+                core.setOutput('pr_url', pull.html_url)
                 completed = true
                 break
               }
@@ -57,6 +57,14 @@ runs:
             }
             
           }
+
+          const commit_info = await github.rest.repos.getCommit({
+                owner: context.repo.repo,
+                repo: context.repo.owner,
+                ref: context.sha
+              })
+
+          core.setOutput('commit_url',`${commit_info.data.html_url}`)
 
           // If no PR is found set branch name to feature/<project>-<sha>
 
@@ -72,7 +80,8 @@ runs:
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
         branch_name: ${{ steps.branch_naming.outputs.branch_name }}
-        pr_link: ${{ steps.branch_naming.outputs.pr_link }}
+        pr_url: ${{ steps.branch_naming.outputs.pr_url }}
+        commit_url: ${{ steps.branch_naming.outputs.commit_url }}
       with:
         github-token: ${{ inputs.token }}
         result-encoding: string
@@ -130,7 +139,9 @@ runs:
 
           //Open pull request
 
-          const pr_comment = process.env.pr_link !== '' ? ` [Associated PR](${process.env.pr_link})` : '' 
+          const pr_comment = process.env.pr_url !== '' ? ` [Associated PR](${process.env.pr_url}).` : ''
+          
+          const pr_commit_comment = process.env.commit_url !== '' ? ` [Associated Commit](${process.env.commit_url}).` : ''
 
           const pull_request = github.rest.pulls.create({
             owner: context.repo.owner,
@@ -138,5 +149,5 @@ runs:
             head: new_branch.data.ref,
             base: 'main',
             title: process.env.branch_name,
-            body: `Automatic HelmRelease CRD updating via ${context.repo.repo} event.${pr_comment}`
+            body: `Automatic HelmRelease CRD updating via ${context.repo.repo} repository event.${pr_comment}${pr_commit_comment}`
           });
