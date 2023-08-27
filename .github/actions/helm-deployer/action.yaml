@@ -20,27 +20,44 @@ runs:
   using: "composite"
   steps:
     - uses: actions/github-script@v6
-      id: pr-discovery
+      id: branch_naming
       with:
         result-encoding: string
         retries: 3
         script: |
 
-          // Find project PR that generated this main commit
+          // Set loop control variable
+          var completed = false
 
+          // Find project PR that generated this main commit and set branch name
           for await (const response of github.paginate.iterator(
-            github.rest.pulls.list,{
+            github.rest.pulls.list,
+            {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              state: 'open',
+              state: 'closed',
               base: 'main',
             }
           )){
-            //ever
+            
 
-            console.log(response)
+            for (const pull of response.data){
+              if (pull.merge_commit_sha == context.sha){
+                core.setOutput('branch_name',`${pull.head.ref}-${context.repo.repo}`)
+                completed = true
+                break
+              }
+            }
+
+            if (completed){
+              break
+            }
             
           }
+
+          // If no PR is found set branch name to feature/<project>-<sha>
+
+          core.setOutput('branch_name',`${context.repo.repo}-${context.sha}`)
 
     - uses: actions/github-script@v6
       id: deployment
@@ -49,6 +66,7 @@ runs:
         repository: ${{ inputs.repository }}
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
+        branch_name: ${{ steps.branch_naming.outputs.branch_name }}
       with:
         github-token: ${{ inputs.token }}
         result-encoding: string
@@ -77,7 +95,7 @@ runs:
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
-              ref: 'refs/heads/hola11',
+              ref: process.env.branch_name,
               sha: main_branch.data.object.sha,
           })
           console.log(main_branch)
