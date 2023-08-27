@@ -131,7 +131,7 @@ runs:
             owner: context.repo.owner,
             repo: process.env.repository,
             path: `clusters/${process.env.cluster}/${process.env.namespace}/${basename}`,
-            message: `Automatic update ${basename} file via ${context.repo.repo} event`,
+            message: `Automatic update clusters/${process.env.cluster}/${process.env.namespace}/${basename} file via ${context.repo.repo} repository event`,
             sha: current_file.data.sha,
             content: bfile,
             branch: new_branch.data.ref
