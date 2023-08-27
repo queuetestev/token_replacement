@@ -28,7 +28,7 @@ runs:
 
           // Find project PR that generated this main commit
 
-          for await (const response of github.paginate.iterator(
+          for await (const response of github.paginate(
             github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
