@@ -95,7 +95,7 @@ runs:
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
-              ref: process.env.branch_name,
+              ref: `refs/heads/${process.env.branch_name}`,
               sha: main_branch.data.object.sha,
           })
           console.log(main_branch)
