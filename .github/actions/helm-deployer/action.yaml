@@ -29,6 +29,8 @@ runs:
           // Set loop control variable
           var completed = false
 
+          core.setOutput('pr_available','false')
+
           // Find project PR that generated this main commit and set branch name
           for await (const response of github.paginate.iterator(
             github.rest.pulls.list,
@@ -44,6 +46,7 @@ runs:
             for (const pull of response.data){
               if (pull.merge_commit_sha == context.sha){
                 core.setOutput('branch_name',`${pull.head.ref}-${context.repo.repo}`)
+                core.setOutput('pr_link', pull.html_url)
                 completed = true
                 break
               }
@@ -57,7 +60,9 @@ runs:
 
           // If no PR is found set branch name to feature/<project>-<sha>
 
-          core.setOutput('branch_name',`${context.repo.repo}-${context.sha}`)
+          if (!completed){
+            core.setOutput('branch_name',`${context.repo.repo}-${context.sha}`)
+          }
 
     - uses: actions/github-script@v6
       id: deployment
@@ -67,6 +72,7 @@ runs:
         cluster: ${{ inputs.cluster }}
         namespace: ${{ inputs.namespace }}
         branch_name: ${{ steps.branch_naming.outputs.branch_name }}
+        pr_link: ${{ steps.branch_naming.outputs.pr_link }}
       with:
         github-token: ${{ inputs.token }}
         result-encoding: string
@@ -116,7 +122,7 @@ runs:
             owner: context.repo.owner,
             repo: process.env.repository,
             path: `clusters/${process.env.cluster}/${process.env.namespace}/${basename}`,
-            message: "Update by version xxxx of xxxxx",
+            message: `Automatic update ${basename} file via ${context.repo.repo} event`,
             sha: current_file.data.sha,
             content: bfile,
             branch: new_branch.data.ref
@@ -124,10 +130,13 @@ runs:
 
           //Open pull request
 
+          const pr_comment = process.env.pr_link !== '' ? ` [Associated PR](${process.env.pr_link})` : '' 
+
           const pull_request = github.rest.pulls.create({
             owner: context.repo.owner,
             repo: process.env.repository,
             head: new_branch.data.ref,
             base: 'main',
-            title: 'ajaaa'
+            title: process.env.branch_name,
+            body: `Automatic HelmRelease CRD updating via ${context.repo.repo} event.${pr_comment}`
           });
