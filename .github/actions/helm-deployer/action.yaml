@@ -32,8 +32,6 @@ runs:
             github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              state: 'open',
-              base: 'main',
             })
           )){
 
