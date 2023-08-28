@@ -22,7 +22,6 @@ runs:
     - uses: actions/github-script@v6
       id: branch_naming
       with:
-        result-encoding: string
         retries: 3
         script: |
 
@@ -69,7 +68,7 @@ runs:
           // If no PR is found set branch name to feature/<project>-<sha>
 
           if (!completed){
-            core.setOutput('branch_name',`${context.repo.repo}-${context.sha}`)
+            core.setOutput('branch_name',`feature/${context.repo.repo}-${context.sha}`)
           }
 
     - uses: actions/github-script@v6
@@ -84,7 +83,6 @@ runs:
         commit_url: ${{ steps.branch_naming.outputs.commit_url }}
       with:
         github-token: ${{ inputs.token }}
-        result-encoding: string
         retries: 3
         script: |
 
@@ -113,8 +111,6 @@ runs:
               ref: `refs/heads/${process.env.branch_name}`,
               sha: main_branch.data.object.sha,
           })
-          console.log(main_branch)
-          console.log(main_branch.data.object.sha)
 
           //Obtain file's blob sha in the branch
           const current_file = await github.rest.repos.getContent({
@@ -122,8 +118,6 @@ runs:
             repo: process.env.repository,
             path: `clusters/${process.env.cluster}/${process.env.namespace}/${basename}`,
           });
-
-          console.log(current_file)
 
           //Modify file in this new branch
 
