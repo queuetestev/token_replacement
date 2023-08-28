@@ -31,6 +31,7 @@ runs:
           core.setOutput('pr_available','false')
 
           // Find project PR that generated this main commit and set branch name
+          core.info('Requesting pull requests to match the associated with this commit')
           for await (const response of github.paginate.iterator(
             github.rest.pulls.list,
             {
@@ -44,8 +45,10 @@ runs:
 
             for (const pull of response.data){
               if (pull.merge_commit_sha == context.sha){
+                core.info('Matching pull request found, generating step outputs')
                 core.setOutput('branch_name',`${pull.head.ref}-${context.repo.repo}`)
                 core.setOutput('pr_url', pull.html_url)
+                core.info('Outputs branch_name and pr_url have been generated successfully')
                 completed = true
                 break
               }
@@ -57,6 +60,8 @@ runs:
             
           }
 
+
+          core.info('Requesting commit info to access commit url')
           const commit_info = await github.rest.repos.getCommit({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -64,11 +69,13 @@ runs:
               })
 
           core.setOutput('commit_url',`${commit_info.data.html_url}`)
+          core.info('Output commit_url has been generated successfully')
 
           // If no PR is found set branch name to feature/<project>-<sha>
 
           if (!completed){
             core.setOutput('branch_name',`feature/${context.repo.repo}-${context.sha}`)
+            core.info('No matching PR was found, using default branch naming (feature/<project>-<sha>)')
           }
 
     - uses: actions/github-script@v6
@@ -90,14 +97,18 @@ runs:
           const path = require('path')
 
           //Read file and get basename
+          core.info('Reading filepath given as input')
           const file = fs.readFileSync(process.env.file_path, 'utf8');
 
+          core.info('Extracting basename from filepath')
           const basename = path.basename(process.env.file_path)
 
           //Convert file to base64
+          core.info('Converting file into base64 format')
           const bfile = btoa(file)
 
           //Get main branch sha
+          core.info('Retrieving flux repo main branch information')
           const main_branch = await github.rest.git.getRef({
               owner: context.repo.owner,
               repo: process.env.repository,
@@ -105,6 +116,7 @@ runs:
           })
 
           //Create branch in flux repo
+          core.info('Creating flux repo new branch')
           const new_branch = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: process.env.repository,
@@ -113,6 +125,7 @@ runs:
           })
 
           //Obtain file's blob sha in the branch
+          core.info('Retreiving information about file that will be updated')
           const current_file = await github.rest.repos.getContent({
             owner: context.repo.owner,
             repo: process.env.repository,
@@ -120,7 +133,7 @@ runs:
           });
 
           //Modify file in this new branch
-
+          core.info(`Updating file clusters/${process.env.cluster}/${process.env.namespace}/${basename}`)
           const update_response = await github.rest.repos.createOrUpdateFileContents({
             owner: context.repo.owner,
             repo: process.env.repository,
@@ -137,6 +150,7 @@ runs:
           
           const pr_commit_comment = process.env.commit_url !== '' ? ` [Associated Commit](${process.env.commit_url}).` : ''
 
+          core.info('Creating PR')
           const pull_request = github.rest.pulls.create({
             owner: context.repo.owner,
             repo: process.env.repository,
