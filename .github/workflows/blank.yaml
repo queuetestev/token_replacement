@@ -57,6 +57,5 @@ jobs:
       repository: flux-test
       cluster: cluster01
       namespace: namespacedemo
-      file: helm-release.yaml
     secrets:
       token: ${{ secrets.FLUX_REPO_TOKEN }}
