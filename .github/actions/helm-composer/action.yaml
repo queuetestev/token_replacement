@@ -11,7 +11,7 @@ runs:
         shopt -s extglob
         mkdir rendered_templates
         MICROSERVICE="${MICROSERVICE##*/}"
-        echo "MICROSERVICE="${MICROSERVICE}" >> "$GITHUB_ENV"
+        echo "MICROSERVICE=${MICROSERVICE}" >> "$GITHUB_ENV"
         for d in templates/!(base)/   
         do
           ENVIRONMENT=$(basename "$d")
