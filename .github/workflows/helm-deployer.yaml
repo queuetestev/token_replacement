@@ -17,6 +17,10 @@ on:
         type: string
         description: Namespace to modify HelmRelease in
         required: true
+      artifact_name:
+        type: string
+        description: artifact name
+        default: 'rendered-helmreleases'
     secrets:
       token:
         required: true
@@ -51,6 +55,8 @@ jobs:
     
     - name: 'Download rendered templates'
       uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact_name }}
 
     - name: 'Get branch Name'
       uses: actions/github-script@v6
