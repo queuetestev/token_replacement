@@ -15,7 +15,7 @@ runs:
         for d in templates/!(base)/   
         do
           ENVIRONMENT=$(basename "$d")
-          kubectl kustomize "$d" >> rendered_templates/"${MICROSERVICE}"-helmrelease-"$ENVIRONMENT".yaml
+          kubectl kustomize "$d" >> rendered_templates/"${MICROSERVICE}"-release-"$ENVIRONMENT".yaml
         done
 
     - name: Upload artifact
