@@ -45,6 +45,7 @@ jobs:
     - uses: ./.github/actions/helm-composer
 
   deployer:
+    needs: composer
     permissions:
       issues: read
       checks: write
