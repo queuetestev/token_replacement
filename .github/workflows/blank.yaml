@@ -45,6 +45,13 @@ jobs:
     - uses: ./.github/actions/helm-composer
 
   deployer:
+    permissions:
+      issues: read
+      checks: write
+      packages: write
+      actions: read
+      contents: write  # for actions/checkout to fetch code
+      pull-requests: write
     uses: ./.github/workflows/helm-deployer.yaml
     with:
       repository: flux-test
