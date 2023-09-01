@@ -46,7 +46,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-        repository: ${{ inputs.repository }}
+        repository: ${{ github.repository_owner }}/${{ inputs.repository }}
         token: ${{ secrets.token }}
     
     - name: 'Download rendered templates'
