@@ -122,8 +122,8 @@ jobs:
       run: |
         shopt -s extglob
         MICROSERVICE="${MICROSERVICE##*/}"
-        echo "MICROSERVICE="${MICROSERVICE}" >> "$GITHUB_OUTPUT"
-        cp ${MICROSERVICE}-release-development clusters/${CLUSTER}/${NAMESPACE}/${MICROSERVICE}-release
+        echo "MICROSERVICE=${MICROSERVICE}" >> "$GITHUB_OUTPUT"
+        cp ${MICROSERVICE}-release-development clusters/"${CLUSTER}"/"${NAMESPACE}"/${MICROSERVICE}-release
         rm ${MICROSERVICE}-release-*
 
     - name: 'Create Pull Request'
