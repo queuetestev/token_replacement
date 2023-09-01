@@ -34,7 +34,7 @@ on:
 #           token: ${{ secrets.FLUX_REPO_TOKEN }}
 jobs:
   composer:
-    runs-on: [linux]
+    runs-on: ubuntu-latest
     steps:
 
     - name: 'Checkout Source Code'

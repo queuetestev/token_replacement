@@ -31,7 +31,7 @@ jobs:
       run:
         shell: bash
 
-    runs-on: [linux]
+    runs-on: ubuntu-latest
     permissions:
       issues: read
       checks: write
